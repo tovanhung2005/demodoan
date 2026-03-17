@@ -28,9 +28,11 @@ export default function Header() {
 
           {/* Navigation */}
           <div className="flex items-center space-x-4">
-            <Button variant="ghost" size="icon">
-              <Home />
-            </Button>
+            <Link to="/home">
+              <Button variant="ghost" size="icon">
+                <Home />
+              </Button>
+            </Link>
 
             <Button variant="ghost" size="icon">
               <Compass />
@@ -50,9 +52,11 @@ export default function Header() {
               </Button>
             </Link>
 
-            <Avatar>
-              <AvatarImage src="https://api.dicebear.com/7.x/avataaars/svg?seed=User" />
-            </Avatar>
+            <Link to="/profile">
+              <Avatar className="w-8 h-8 cursor-pointer">
+                <AvatarImage src="https://api.dicebear.com/7.x/avataaars/svg?seed=User" />
+              </Avatar>
+            </Link>
           </div>
         </div>
       </div>
