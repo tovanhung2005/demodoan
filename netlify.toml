@@ -3,7 +3,7 @@
   command = "npm run build"
   
   # Thư mục chứa sản phẩm cuối cùng để Netlify phục vụ
-  publish = "build"
+  publish = "dist"
 
 # Cấu hình chuyển hướng cho các ứng dụng Single Page (SPA)
 [[redirects]]
