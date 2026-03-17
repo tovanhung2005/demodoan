@@ -1,0 +1,12 @@
+[build]
+  # Lệnh để build dự án (Thay đổi tùy theo framework bạn dùng)
+  command = "npm run build"
+  
+  # Thư mục chứa sản phẩm cuối cùng để Netlify phục vụ
+  publish = "build"
+
+# Cấu hình chuyển hướng cho các ứng dụng Single Page (SPA)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
