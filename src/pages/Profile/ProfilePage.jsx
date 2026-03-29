@@ -5,7 +5,7 @@ import ProfileAbout from "./components/ProfileAbout";
 import ProfilePosts from "./components/ProfilePosts";
 import ProfileFriends from "./components/ProfileFriends";
 import ProfilePhotos from "./components/ProfilePhotos";
-import Hearder from "../Home/components/Header";
+import Hearder from "@/components/layout/Header";
 export default function ProfilePage() {
   const {
     profileData,
@@ -20,10 +20,6 @@ export default function ProfilePage() {
 
   return (
     <div className="min-h-screen bg-[#f0f2f5]">
-      {/* Nếu bạn có component Header dùng chung (như navbar của HomePage),
-        bạn có thể import và đặt ở đây:
-        <Header /> 
-      */}
 <Hearder />
       <ProfileHeader profileData={profileData} />
 

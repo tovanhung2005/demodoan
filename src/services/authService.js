@@ -1,78 +1,63 @@
-import users from "../data/mockUsers";
+import axiosClient from "../api/axiosClient";
 
-/**
- * LOGIN
- */
-export const login = (identifier, password) => {
-  if (!identifier?.trim() || !password?.trim()) {
-    return {
-      success: false,
-      message: "Vui lòng nhập đầy đủ thông tin.",
-    };
+export const authService = {
+  getToken: () => localStorage.getItem("nexus_token"),
+  setToken: (token) => localStorage.setItem("nexus_token", token),
+  removeToken: () => localStorage.removeItem("nexus_token"),
+
+  /**
+   * ĐĂNG NHẬP: Trả về lỗi thay vì in ra log
+   */
+  login: async (identifier, password) => {
+    try {
+      const response = await axiosClient.post("/auth/token", {
+        username: identifier, 
+        password: password,
+      });
+      
+      authService.setToken(response.token);
+      return { success: true, token: response.token };
+    } catch (error) {
+      // Ưu tiên lấy message từ Backend (ví dụ: "User unauthenticated")
+      const errorMessage = error.response?.data?.message || "Sai tài khoản hoặc mật khẩu.";
+      return { success: false, message: errorMessage };
+    }
+  },
+
+  /**
+   * ĐĂNG KÝ
+   */
+  register: async (data) => {
+    try {
+      const payload = {
+        username: data.email || data.phone, 
+        password: data.password,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        dob: data.birthDate,
+      };
+
+      const response = await axiosClient.post("/users", payload);
+      return { success: true, user: response };
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || "Đăng ký thất bại.";
+      return { success: false, message: errorMessage };
+    }
+  },
+
+  /**
+   * ĐĂNG XUẤT: Im lặng dọn dẹp token
+   */
+  logout: async () => {
+    try {
+      const token = authService.getToken();
+      if (token) {
+        await axiosClient.post("/auth/logout", { token });
+      }
+    } catch (error) {
+      // Không cần thiết phải hiện lỗi đăng xuất cho người dùng
+    } finally {
+      authService.removeToken();
+    }
   }
-
-  const existUser = users.find(
-    (u) => u.email === identifier || u.std === identifier
-  );
-
-  if (!existUser) {
-    return {
-      success: false,
-      message: "Tài khoản không tồn tại.",
-    };
-  }
-
-  if (existUser.password !== password) {
-    return {
-      success: false,
-      message: "Sai mật khẩu.",
-    };
-  }
-
-  return {
-    success: true,
-    user: existUser,
-  };
-};
-
-
-/**
- * REGISTER
- */
-export const register = (data) => {
-
-  const emailExist = users.find((u) => u.email === data.email);
-  if (emailExist) {
-    return {
-      success: false,
-      field: "email",
-      message: "Email đã tồn tại.",
-    };
-  }
-
-  const phoneExist = users.find((u) => u.std === data.phone);
-  if (phoneExist) {
-    return {
-      success: false,
-      field: "phone",
-      message: "Số điện thoại đã tồn tại.",
-    };
-  }
-
-  const newUser = {
-    id: users.length + 1,
-    name: `${data.firstName} ${data.lastName}`,
-    email: data.email,
-    std: data.phone,
-    birthDate: data.birthDate,
-    gender: data.gender,
-    password: data.password,
-  };
-
-  users.push(newUser);
-
-  return {
-    success: true,
-    user: newUser,
-  };
 };
